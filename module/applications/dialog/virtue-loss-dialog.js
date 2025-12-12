@@ -39,6 +39,7 @@ class VirtueLossDialog extends Application {
     const amountFormula = this.element.find("[name=amount]").val();
 
     if (!amountFormula || !amountIsValid) {
+      ui.notifications.warn("MB.VirtueLoss.Notification.Invalid", { localize: true });
       return;
     }
 
