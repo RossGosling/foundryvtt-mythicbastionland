@@ -30,4 +30,14 @@ export const configureSystem = () => {
     type: Boolean,
     default: true
   });
+
+  game.settings.register("mythicbastionland", "MB.AllowPlayerRegenerateButton", {
+    name: game.i18n.localize("MB.AllowPlayerRegenerateButtonSettingName"),
+    hint: game.i18n.localize("MB.AllowPlayerRegenerateButtonSettingHint"),
+    scope: "world",
+    config: true,
+    requiresReload: false,
+    type: Boolean,
+    default: true
+  });
 };
