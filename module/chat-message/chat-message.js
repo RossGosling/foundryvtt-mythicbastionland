@@ -10,11 +10,18 @@ export class MBChatMessage extends ChatMessage {
   async getHTML() {
     const html = await super.getHTML();
     if (this.flags.systemMessage) {
+
       if (this.flags.cssClasses.value) {
         html.addClass(this.flags.cssClasses.value);
       }
+
       html.on("click", ".inline-roll", (event) => this.#onInlineRollClick(event));
       html.on("click", "button.chat-message-button", (event) => this.#onButtonClick(event));
+
+      const speakerActor = ChatMessage.getSpeakerActor(this.speaker);
+      if (!speakerActor?.sheet?.isEditable) {
+        html.find("button[data-action-target=\"speaker\"]").each((index, button) => $(button).prop("disabled", true));
+      }
     }
     return html;
   }
@@ -24,16 +31,14 @@ export class MBChatMessage extends ChatMessage {
     event.stopPropagation();
 
     const actor = ChatMessage.getSpeakerActor(this.speaker);
-    await actorInlineRollAction(actor, this.#getOnlineRollData(event));
+    return (actor?.sheet?.isEditable) ? actorInlineRollAction(actor, this.#getOnlineRollData(event)) : null;
   }
 
   async #onButtonClick(event) {
     event.preventDefault();
+
     const actor = ChatMessage.getSpeakerActor(this.speaker);
-    if (!actor) {
-      return;
-    }
-    await this.#handleButtons(actor, event.currentTarget);
+    return (actor?.sheet?.isEditable) ? this.#handleButtons(actor, event.currentTarget) : null;
   }
 
   #getEventData(event, data) {
