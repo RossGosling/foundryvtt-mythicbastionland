@@ -20,7 +20,7 @@ export class MBChatMessage extends ChatMessage {
 
       const speakerActor = ChatMessage.getSpeakerActor(this.speaker);
       if (!speakerActor?.sheet?.isEditable) {
-        html.find("button[data-action-target=\"speaker\"]").each((index, button) => $(button).prop("disabled", true));
+        html.find("button[data-action]").each((index, button) => $(button).prop("disabled", true));
       }
     }
     return html;
