@@ -10,17 +10,18 @@ export class MBChatMessage extends ChatMessage {
   async getHTML() {
     const html = await super.getHTML();
     if (this.flags.systemMessage) {
-
       if (this.flags.cssClasses.value) {
         html.addClass(this.flags.cssClasses.value);
       }
 
-      html.on("click", ".inline-roll", (event) => this.#onInlineRollClick(event));
-      html.on("click", "button.chat-message-button", (event) => this.#onButtonClick(event));
+      const actor = ChatMessage.getSpeakerActor(this.speaker);
 
-      const speakerActor = ChatMessage.getSpeakerActor(this.speaker);
-      if (!speakerActor?.sheet?.isEditable) {
-        html.find("button[data-action]").each((index, button) => $(button).prop("disabled", true));
+      if (actor?.sheet?.isEditable) {
+        html.on("click", "a.inline-roll", (event) => this.#onInlineRollClick(event));
+        html.on("click", "button.chat-message-button", (event) => this.#onButtonClick(event));
+      } else {
+        html.find("a.inline-roll").each((index, element) => $(element).attr("disabled", true));
+        html.find("button.chat-message-button").each((index, element) => $(element).attr("disabled", true));
       }
     }
     return html;
